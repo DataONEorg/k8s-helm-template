@@ -1,42 +1,51 @@
-## Product: This is a dataone tagline for the product
+## Helm Template for Deploying on Kubernetes Clusters
 
-- **Authors**: Last, First (ORCID); ...
+- **Authors**: Brooke, Matthew (https://orcid.org/0000-0002-1472-913X); ...
 - **License**: [Apache 2](http://opensource.org/licenses/Apache-2.0)
-- [Package source code on GitHub](https://github.com/DataONEorg/reponame)
-- [**Submit Bugs and feature requests**](https://github.com/DataONEorg/reponame/issues)
+- [Package source code on GitHub](https://github.com/DataONEorg/k8s-helm-template)
+- [**Submit Bugs and feature requests**](https://github.com/DataONEorg/k8s-helm-template/issues)
 - Contact us: support@dataone.org
 - [DataONE discussions](https://github.com/DataONEorg/dataone/discussions)
 
-*Product overview goes here.* Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+This is a template to facilitate creation of new Helm charts, for deploying on Kubernetes clusters. It provides a scaffold for the basic structure and files needed to create a Helm chart, including configuration files, Kubernetes manifests, and documentation.
 
-DataONE in general, and HashStore in particular, are open source, community projects.  We [welcome contributions](./CONTRIBUTING.md) in many forms, including code, graphics, documentation, bug reports, testing, etc.  Use the [DataONE discussions](https://github.com/DataONEorg/dataone/discussions) to discuss these contributions with us.
-
+DataONE in general, and this template in particular, are open source, community projects.  We [welcome contributions](./CONTRIBUTING.md) in many forms, including code, graphics, documentation, bug reports, testing, etc.  Use the [DataONE discussions](https://github.com/DataONEorg/dataone/discussions) to discuss these contributions with us.
 
 ## Documentation
 
-Documentation is a work in progress, and can be found ...
-
-## Development build
-
-This is a python package, and built using the [Python Poetry](https://python-poetry.org) build tool.
-
-To install locally, create a virtual environment for python 3.9+, 
-install poetry, and then install or build the package with `poetry install` or `poetry build`, respectively.
-
-To run tests, navigate to the root directory and run `pytest -s`. The test suite contains tests that
-take a longer time to run (relating to the storage of large files) - to execute all tests, run
-`pytest --run-slow`. To see detailed
+Documentation is a work in progress, and can be found here in the README.md file (how to use this template), and in the [docs](./docs) directory (research/background/decisions etc.)
 
 ## Usage Example
 
-To view more details about the Public API - see 'hashstore.py` interface documentation
+1. Copy the `helm` directory into your target repo, and perform the following renaming and replacement steps to reflect your repo name:
 
-```py
-from product import Product
+2. Find values for the variables below, to reflect your project-specific naming:
+  - `APP_FULL_NAME` (all lowercase a to z; dashes allowed; no other special characters or spaces): the official full name of your application (typically your GH repo name) - e.g. `notification-service`.
+  - `APP_ABBREV_NAME` (all lowercase a to z; no special characters or spaces): an abbreviated version of your application name. Keep it as short as possible, without introducing ambiguity (e.g. for `notification-service`, abbreviate to `notifications`; don't use `ns`).
+  - `ENV_PREFIX`: (all UPPERCASE A to Z; no special characters or spaces): a prefix for any environment variables that will be set in the container. This should be a short, uppercase string, e.g. `NS` for `notification-service`.
+  - 
 
-# Example code here...
 
+3. then run the commands in your terminal:
+```shell
+# Assuming your official application name (typically your GH repo name) is "notification-service", for example:
+APP_FULL_NAME=notification-service
+APP_ABBREV_NAME=notifications
+ENV_PREFIX=NS
+
+# Find and replace only in text files, excluding binary 
+# files, and dot-files (e.g. `.gitignore`) & dirs (e.g. `.git/`) 
+find . -type f \
+  ! -path "./.*" \
+  ! -path "./.*/*" \
+  -exec grep -Iq . {} \; -exec sed -i '' \
+    -e "s/%%APP_FULL_NAME%%/${APP_FULL_NAME}/g" \
+    -e "s/%%APP_ABBREV_NAME%%/${APP_ABBREV_NAME}/g" \
+    -e "s/%%ENV_PREFIX%%/${ENV_PREFIX}/g" \
+    {} +
 ```
+
+4. Finally, clean up all the leftover informational comments that are no longer needed. Keep your Helm chart clean and simple, so that it's easy to read and understand!
 
 ## License
 ```
@@ -46,7 +55,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -63,6 +72,11 @@ Work on this package was supported by:
 
 Additional support was provided for collaboration by the National Center for Ecological Analysis and Synthesis, a Center funded by the University of California, Santa Barbara, and the State of California.
 
-[![DataONE_footer](https://user-images.githubusercontent.com/6643222/162324180-b5cf0f5f-ae7a-4ca6-87c3-9733a2590634.png)](https://dataone.org)
-
-[![nceas_footer](https://www.nceas.ucsb.edu/sites/default/files/2020-03/NCEAS-full%20logo-4C.png)](https://www.nceas.ucsb.edu)
+<a href="https://dataone.org">
+<img src="https://user-images.githubusercontent.com/6643222/162324180-b5cf0f5f-ae7a-4ca6-87c3-9733a2590634.png"
+  alt="DataONE_footer" style="width:44%;padding-right:5%;">
+</a>
+<a href="https://www.nceas.ucsb.edu">
+<img src="https://www.nceas.ucsb.edu/sites/default/files/2020-03/NCEAS-full%20logo-4C.png"
+  alt="NCEAS_footer" style="width:44%;padding-top:3%;padding-bottom:3%; background-color: white;">
+</a>
