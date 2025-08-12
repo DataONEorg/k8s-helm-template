@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "notifications.fullname" . }}
+  name: {{ include "%%APP_ABBREV_NAME%%.fullname" . }}
   labels:
-    {{- include "notifications.labels" . | nindent 4 }}
+    {{- include "%%APP_ABBREV_NAME%%.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -39,7 +39,7 @@ spec:
             {{- end }}
             backend:
               service:
-                name: {{ include "notifications.fullname" $ }}
+                name: {{ include "%%APP_ABBREV_NAME%%.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "notifications.fullname" . }}
+  name: {{ include "%%APP_ABBREV_NAME%%.fullname" . }}
   labels:
-    {{ include "notifications.labels" . | nindent 4 }}
+    {{ include "%%APP_ABBREV_NAME%%.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{ include "notifications.selectorLabels" . | nindent 6 }}
+      {{ include "%%APP_ABBREV_NAME%%.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{ include "notifications.labels" . | nindent 8 }}
+        {{ include "%%APP_ABBREV_NAME%%.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{ toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{ toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "notifications.serviceAccountName" . }}
+      serviceAccountName: {{ include "%%APP_ABBREV_NAME%%.serviceAccountName" . }}
       securityContext:
         {{ toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -40,7 +40,8 @@ spec:
             - /usr/local/tomee/bin/catalina.sh
             - run
           env:
-            - name: NS_PROPERTIES_YAML_PATH
+            - name: %%APP
+            %%_PROPERTIES_YAML_PATH
               value: /etc/dataone/notification-service/properties.yaml
             - name: CATALINA_OPTS
               value: {{ join " " .Values.tomcat.extraCatalinaOpts }}
@@ -50,7 +51,7 @@ spec:
                         {{- end }}
                         {{- join " " .Values.tomcat.jmxCatalinaOpts }}
                       {{- end }}{{- printf " " -}}
-                      -Dlog4j2.configurationFile=/etc/dataone/notification-service/log4j2-k8s.yaml
+                      -Dlog4j2.configurationFile=/etc/dataone/%%APP_FULL_NAME%%/log4j2-k8s.yaml
           envFrom:
             - secretRef:
                 name: {{ required "missing name for passwords K8s Secret!" .Values.postgresql.auth.existingSecret }}
@@ -72,7 +73,7 @@ spec:
             {{- if .Values.extraVolumeMounts }}
             {{- tpl (toYaml .Values.extraVolumeMounts) . | nindent 12 }}
             {{- end }}
-            - mountPath: /etc/dataone/notification-service
+            - mountPath: /etc/dataone/%%APP_FULL_NAME%%
               name: {{ .Release.Name }}-config-volume
               readOnly: true
       volumes:
@@ -81,7 +82,7 @@ spec:
         {{- end }}
         - name: {{ .Release.Name }}-config-volume
           configMap:
-            name: {{ .Release.Name }}-notifications-configfiles
+            name: {{ .Release.Name }}-%%APP_ABBREV_NAME%%-configfiles
             defaultMode: 0644
 
       {{- with .Values.nodeSelector }}

@@ -2,20 +2,20 @@
 ##
 ## example:
 ##
-##  helm upgrade --install ns --debug -n notifications \
-##                          -f ./helm/examples/values-dev-cluster-ns-example.yaml \
-##                          oci://ghcr.io/dataoneorg/charts/notifications --version [version]
+##  helm upgrade --install ${RELEASE_NAME} --debug -n %%APP_ABBREV_NAME%% \
+##                          -f ./helm/examples/values-dev-cluster-example.yaml \
+##                          oci://ghcr.io/dataoneorg/charts/%%APP_ABBREV_NAME%% --version [version]
 ##
 ## (or to install from local helm chart code, replace:
-##  oci://ghcr.io/dataoneorg/charts/notifications --version [version]
+##  oci://ghcr.io/dataoneorg/charts/%%APP_ABBREV_NAME%% --version [version]
 ##  with: ./helm)
 ##
 ## see values.yaml for full documentation on the following parameters
 ##
 
 global:
-  ## Use your own release name instead of ns
-  passwordsSecret: &passwordSecretName ns-notifications-secrets
+  ## Use your own release name instead of ${RELEASE_NAME}
+  passwordsSecret: &passwordSecretName ${RELEASE_NAME}-%%APP_ABBREV_NAME%%-secrets
 
 ns:
   logLevel: debug
@@ -49,7 +49,7 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: &hostname notifications.test.dataone.org
+    - host: &hostname %%APP_ABBREV_NAME%%.test.dataone.org
       paths:
         - path: /
           pathType: Prefix

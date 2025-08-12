@@ -1,12 +1,12 @@
-## Default values for notification-service.
+## Default values for %%APP_FULL_NAME%%.
 ## This is a YAML-formatted file.
 ##
 ##     * * *   NOTE: SOME VALUES INCLUDE THE PLACEHOLDER "${RELEASE_NAME}",   * * *
 ##     * * *         WHICH MUST BE REPLACED BY THE ACTUAL RELEASE NAME        * * *
 ##
 ## Make sure you're in the correct k8s context, then:
-##  $  helm upgrade --install ns -n notifications -f values-dev-cluster-notifications.yaml \
-##         oci://ghcr.io/dataone/charts/notification-service --version [version] \
+##  $  helm upgrade --install ${RELEASE_NAME} -n %%APP_ABBREV_NAME%% -f values-dev-cluster-%%APP_ABBREV_NAME%%.yaml \
+##         oci://ghcr.io/dataone/charts/%%APP_FULL_NAME%% --version [version] \
 ##             --debug --render-subchart-notes
 ##
 
@@ -22,9 +22,9 @@ global:
   ##
   ## IMPORTANT NOTE: make sure you edit this, since IT INCLUDES THE RELEASE NAME! For
   ## example, if the release name is 'myrelease', the value of name: would be
-  ## 'myrelease-notifications-secrets'.
+  ## 'myrelease-%%APP_ABBREV_NAME%%-secrets'.
   ##
-  passwordsSecret: &passwordSecretName ${RELEASE_NAME}-notifications-secrets
+  passwordsSecret: &passwordSecretName ${RELEASE_NAME}-%%APP_ABBREV_NAME%%-secrets
 
   ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
   ##
@@ -35,20 +35,20 @@ global:
   ##
   defaultStorageClass: local-path
 
-## @section Application-Specific Properties for notification-service
+## @section Application-Specific Properties for %%APP_FULL_NAME%%
 ##
 %%APP_ABBREV_NAME%%:
-  ## @param ns.logLevel The log level for the notification service.
+  ## @param %%APP_ABBREV_NAME%%.logLevel The log level for the %%APP_FULL_NAME%%.
   ## (trace, debug, info, warn, error, fatal)
   logLevel: warn
 
   database:
-    ## @param ns.database.jdbcHost Override auto-populated database connection hostname.
+    ## @param %%APP_ABBREV_NAME%%.database.jdbcHost Override auto-populated database connection hostname.
     ## Leave empty to use the default value, which is the name of the postgresql headless service.
     ##
     jdbcHost: ""
 
-    ## @param ns.database.jdbcPort The port for the database connection.
+    ## @param %%APP_ABBREV_NAME%%.database.jdbcPort The port for the database connection.
     ## This is used by the application to connect to the database.
     ##
     jdbcPort: 5432
@@ -59,7 +59,7 @@ replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: ghcr.io/dataoneorg/notification-service
+  repository: ghcr.io/dataoneorg/%%APP_FULL_NAME%%
   # This sets the pull policy for images.
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
@@ -68,7 +68,7 @@ image:
 
 ## This section builds out the service account more information can be found here:
 ##   https://kubernetes.io/docs/concepts/security/service-accounts/ServiceAccount
-## @param serviceAccount.create Should a service account be created to run notifications?
+## @param serviceAccount.create Should a service account be created to run %%APP_ABBREV_NAME%%?
 ## @param serviceAccount.annotations Annotations to add to the service account
 ## @param serviceAccount.name The name to use for the service account.
 ##        If not set, and 'create' is 'true', a name is generated using the 'fullname' template
@@ -151,7 +151,7 @@ ingress:
   ## Each host must have a path defined, and the pathType must be set to either
   ## 'ImplementationSpecific', 'Exact', or 'Prefix'; e.g:
   ##   hosts:
-  ##     - host: &hostname notifications.test.dataone.org
+  ##     - host: &hostname %%APP_ABBREV_NAME%%.test.dataone.org
   ##       paths:
   ##         - path: /
   ##           pathType: Prefix
@@ -228,7 +228,7 @@ postgresql:
   ## connection URI is set accordingly).
   ## Once the postgres container is running, test using:
   ##   $  kubectl exec -it <postgresql-pod-name> -- psql  -U <username>  -d <databasename>
-  ## (or from a shell in notifications container: psql  -U <username>  -h <pghostname> <databasename>)
+  ## (or from a shell in %%APP_ABBREV_NAME%% container: psql  -U <username>  -h <pghostname> <databasename>)
   ##
   enabled: true
 
@@ -254,17 +254,17 @@ postgresql:
 
   auth:
     ## @param postgresql.auth.username Username for accessing the database
-    ## For the corresponding password, see ns.database.password in secrets
+    ## For the corresponding password, see %%APP_ABBREV_NAME%%.database.password in secrets
     ## (These values are also used by the application to authenticate)
     ##
-    username: notifications_user
+    username: %%APP_ABBREV_NAME%%_user
 
-    ## @param postgresql.auth.database The name of the database used by the notification service.
+    ## @param postgresql.auth.database The name of the database used by %%APP_FULL_NAME%%.
     ##
-    database: notifications
+    database: %%APP_ABBREV_NAME%%
 
     ## @param postgresql.auth.existingSecret Secrets location for postgres password
-    ## Typically the existing secrets also used by notifications - see ./admin/secrets.yaml
+    ## Typically the existing secrets also used by %%APP_ABBREV_NAME%% - see ./admin/secrets.yaml
     ##
     existingSecret: *passwordSecretName
 
@@ -272,12 +272,12 @@ postgresql:
     ## within existing secrets
     ##
     secretKeys:
-      userPasswordKey: %%ENV-PREFIX%%_DATABASE_PASSWORD
+      userPasswordKey: %%ENV_PREFIX%%_DATABASE_PASSWORD
 
       ## @param postgresql.auth.secretKeys.adminPasswordKey Dummy value - not used (see notes):
       ## Bitnami expects to find it in our 'existingSecret' secrets location, and fails otherwise
       ##
-      adminPasswordKey: %%ENV-PREFIX%%_DATABASE_PASSWORD
+      adminPasswordKey: %%ENV_PREFIX%%_DATABASE_PASSWORD
 
   ## @param postgresql.primary.pgHbaConfiguration PostgreSQL Primary client authentication
   ## configuration; ref: https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html

@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-notifications-configfiles
+  name: {{ .Release.Name }}-%%APP_ABBREV_NAME%%-configfiles
   labels:
-    {{- include "notifications.labels" . | nindent 4 }}
+    {{- include "%%APP_ABBREV_NAME%%.labels" . | nindent 4 }}
 {{/*{{ (tpl (.Files.Glob "config/*").AsConfig . ) | indent 4 }}*/}}
 data:
 {{- $files := .Files.Glob "config/*" }}

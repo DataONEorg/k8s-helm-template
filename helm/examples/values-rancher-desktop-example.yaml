@@ -1,0 +1,36 @@
+## override values.yaml with values to use for running on a local Rancher Desktop cluster
+##
+## example:
+##
+##  helm upgrade --install ${RELEASE_NAME} --debug -n %%APP_ABBREV_NAME%% --create-namespace \
+##                          -f ./helm/examples/values-dev-cluster-example.yaml \
+##                          oci://ghcr.io/dataoneorg/charts/%%APP_ABBREV_NAME%%
+##
+## (or to install from local helm chart code, replace: oci://ghcr.io/dataoneorg/charts/%%APP_ABBREV_NAME%%
+##  with: ./helm)
+## see values.yaml for full documentation on the following parameters
+##
+
+global:
+  ## Note:
+  ## Prerequisite: install "ns-%%APP_ABBREV_NAME%%-secrets" from helm/admin/secrets.yaml
+  ## (assumes release name is "ns")
+  passwordsSecret: &passwordSecretName ${RELEASE_NAME}-%%APP_ABBREV_NAME%%-secrets
+
+ns:
+  logLevel: debug
+
+postgresql:
+  auth:
+    existingSecret: *passwordSecretName
+
+tomcat:
+  jmxEnabled: true
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 300m
+    memory: 128Mi

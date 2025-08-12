@@ -1,9 +1,11 @@
-ns:
+%%APP_ABBREV_NAME%%:
+
+
   database:
-    username: {{ .Values.postgresql.auth.username | default "notifications_user" }}
-    name: {{ .Values.postgresql.auth.database | default "notifications" }}
-    jdbcHost: {{ include "notifications.jdbcHostName" . }}
-    jdbcPort: {{ default "5432" .Values.ns.database.jdbcPort | quote }}
+    username: {{ .Values.postgresql.auth.username | default "%%APP_ABBREV_NAME%%_user" }}
+    name: {{ .Values.postgresql.auth.database | default "%%APP_ABBREV_NAME%%" }}
+    jdbcHost: {{ include "%%APP_ABBREV_NAME%%.jdbcHostName" . }}
+    jdbcPort: {{ default "5432" .Values.%%APP_ABBREV_NAME%%.database.jdbcPort | quote }}
     ##  See HikariCP configuration options at:
     ##  https://github.com/brettwooldridge/HikariCP?tab=readme-ov-file#gear-configuration-knobs-baby
     driverClassName: "org.postgresql.Driver"
